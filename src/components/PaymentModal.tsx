@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { QRCodeSVG } from 'qrcode.react';
 import { X, CheckCircle2, CreditCard, QrCode, Building, ShieldCheck, AlertCircle, Sparkles } from 'lucide-react';
 
 interface PaymentModalProps {
@@ -21,19 +22,13 @@ export default function PaymentModal({ isOpen, amount, purpose, onSuccess, onClo
   const [cardHolder, setCardHolder] = useState('');
   const [expiry, setExpiry] = useState('');
   const [cvv, setCvv] = useState('');
-
-  
-  const [upiCountdown, setUpiCountdown] = useState(120);
-
-  useEffect(() => {
-    let timer: any;
-    if (isOpen && activeMethod === 'upi' && upiCountdown > 0 && !isSuccess) {
-      timer = setInterval(() => {
-        setUpiCountdown((prev) => (prev > 0 ? prev - 1 : 120));
-      }, 1000);
-    }
-    return () => clearInterval(timer);
-  }, [isOpen, activeMethod, upiCountdown, isSuccess]);
+  const qrPayload = JSON.stringify({
+    app: 'SmartMetro',
+    type: 'demo-payment',
+    purpose,
+    amount: Number(amount.toFixed(2)),
+    currency: 'INR',
+  });
 
   if (!isOpen) return null;
 
@@ -69,13 +64,6 @@ export default function PaymentModal({ isOpen, amount, purpose, onSuccess, onClo
     setCardHolder('');
     setExpiry('');
     setCvv('');
-    setUpiCountdown(120);
-  };
-
-  const formatCountdown = (secs: number) => {
-    const mins = Math.floor(secs / 60);
-    const remSecs = secs % 60;
-    return `${mins}:${remSecs < 10 ? '0' : ''}${remSecs}`;
   };
 
   return (
@@ -177,48 +165,14 @@ export default function PaymentModal({ isOpen, amount, purpose, onSuccess, onClo
 
                   {activeMethod === 'upi' && (
                     <div className="text-center flex flex-col items-center">
-                      {/* Interactive Simulated QR */}
+                      {/* Scannable demo QR with payment details only */}
                       <div className="relative p-2 bg-white rounded-lg inline-block shadow-lg mb-3">
-                        <svg className="w-28 h-28 text-slate-950" viewBox="0 0 100 100">
-                          {/* Simulated QR Code Paths */}
-                          <rect x="0" y="0" width="30" height="30" fill="currentColor" />
-                          <rect x="5" y="5" width="20" height="20" fill="white" />
-                          <rect x="10" y="10" width="10" height="10" fill="currentColor" />
-                          
-                          <rect x="70" y="0" width="30" height="30" fill="currentColor" />
-                          <rect x="75" y="5" width="20" height="20" fill="white" />
-                          <rect x="80" y="10" width="10" height="10" fill="currentColor" />
-                          
-                          <rect x="0" y="70" width="30" height="30" fill="currentColor" />
-                          <rect x="5" y="75" width="20" height="20" fill="white" />
-                          <rect x="10" y="80" width="10" height="10" fill="currentColor" />
-
-                          {/* Scatter bits */}
-                          <rect x="40" y="5" width="8" height="8" fill="currentColor" />
-                          <rect x="55" y="12" width="10" height="5" fill="currentColor" />
-                          <rect x="45" y="25" width="16" height="6" fill="currentColor" />
-                          <rect x="5" y="45" width="10" height="10" fill="currentColor" />
-                          <rect x="25" y="40" width="15" height="15" fill="currentColor" />
-                          <rect x="40" y="40" width="8" height="8" fill="currentColor" />
-                          <rect x="55" y="45" width="30" height="30" fill="currentColor" />
-                          <rect x="60" y="50" width="20" height="20" fill="white" />
-                          
-                          <rect x="15" y="60" width="15" height="5" fill="currentColor" />
-                          <rect x="85" y="85" width="10" height="10" fill="currentColor" />
-                          <rect x="40" y="80" width="10" height="10" fill="currentColor" />
-                        </svg>
-                        <div className="absolute inset-0 flex items-center justify-center bg-transparent">
-                          <motion.div 
-                            className="w-full h-0.5 bg-slate-500 opacity-60 absolute"
-                            animate={{ top: ['5%', '95%', '5%'] }}
-                            transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
-                          />
-                        </div>
+                        <QRCodeSVG value={qrPayload} size={144} level="M" marginSize={4} />
                       </div>
                       
-                      <p className="text-sm text-slate-300 font-sans font-medium">Scan QR with any UPI App (GPay, PhonePe, Paytm)</p>
+                      <p className="text-sm text-slate-300 font-sans font-medium">Scan to view demo payment details</p>
                       <p className="text-xs text-slate-400 font-mono mt-1.5 font-semibold">
-                        Expires in: {formatCountdown(upiCountdown)}
+                        Demo only · no payment is collected
                       </p>
                     </div>
                   )}

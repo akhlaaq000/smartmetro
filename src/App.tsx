@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
+import { QRCodeSVG } from 'qrcode.react';
 import { allStationsMap, planRoute } from './data/stations';
 import { Smile, ArrowRight, QrCode } from 'lucide-react';
 import StationSelect from './components/StationSelect';
@@ -390,30 +391,7 @@ export default function App() {
                   {/* Barcode / QR Section */}
                   <div className="border-t border-dashed border-slate-800 pt-5 text-center flex flex-col items-center select-none">
                     <div className="bg-white p-3 rounded-lg inline-block shadow-lg">
-                      <svg className="w-40 h-40 text-slate-950" viewBox="0 0 100 100">
-                        <rect x="0" y="0" width="25" height="25" fill="currentColor" />
-                        <rect x="4" y="4" width="17" height="17" fill="white" />
-                        <rect x="8" y="8" width="9" height="9" fill="currentColor" />
-                        
-                        <rect x="75" y="0" width="25" height="25" fill="currentColor" />
-                        <rect x="79" y="4" width="17" height="17" fill="white" />
-                        <rect x="83" y="8" width="9" height="9" fill="currentColor" />
-                        
-                        <rect x="0" y="75" width="25" height="25" fill="currentColor" />
-                        <rect x="4" y="79" width="17" height="17" fill="white" />
-                        <rect x="8" y="83" width="9" height="9" fill="currentColor" />
-
-                        <rect x="35" y="5" width="10" height="10" fill="currentColor" />
-                        <rect x="55" y="2" width="12" height="6" fill="currentColor" />
-                        <rect x="40" y="25" width="10" height="20" fill="currentColor" />
-                        <rect x="15" y="45" width="15" height="15" fill="currentColor" />
-                        <rect x="55" y="45" width="35" height="35" fill="currentColor" />
-                        <rect x="62" y="52" width="21" height="21" fill="white" />
-                        
-                        <rect x="80" y="80" width="10" height="10" fill="currentColor" />
-                        <rect x="45" y="85" width="8" height="8" fill="currentColor" />
-                        <rect x="35" y="65" width="15" height="5" fill="currentColor" />
-                      </svg>
+                      <QRCodeSVG value={activeTicket.qrCodeValue} size={160} level="M" marginSize={4} />
                     </div>
                   </div>
                 </div>
